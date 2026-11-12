@@ -22,6 +22,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val defaultApiEnvironment = providers
+            .gradleProperty("apiEnvironment")
+            .getOrElse("PROD")
+            .uppercase()
+        buildConfigField(
+            "String",
+            "DEFAULT_API_ENVIRONMENT",
+            "\"$defaultApiEnvironment\"",
+        )
     }
 
     buildTypes {
@@ -31,6 +41,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "DEFAULT_API_ENVIRONMENT", "\"PROD\"")
         }
     }
     compileOptions {
@@ -39,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -89,6 +101,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
