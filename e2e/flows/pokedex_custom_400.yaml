@@ -1,0 +1,11 @@
+appId: com.irv205.pokeapi
+---
+# Requires the app to be started in MOCK mode with e2e/fixtures/pokemon_page_custom_400.json
+# Verifies that a custom 400 response from the mock is surfaced as an error state.
+- extendedWaitUntil:
+    visible: "Pokédex"
+    timeout: 30000
+- extendedWaitUntil:
+    visible: "Reintentar"
+    timeout: 15000
+- assertVisible: "Reintentar"

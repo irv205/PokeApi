@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pokemon_page",
+    "name": "Lista de Pokemon",
+    "method": "GET",
+    "pathPattern": "/api/v2/pokemon",
+    "enabled": true,
+    "selectedScenarioId": "first_page",
+    "scenarios": [
+      {
+        "id": "first_page",
+        "name": "Primera pagina (200)",
+        "statusCode": 200,
+        "contentType": "application/json",
+        "requestQuery": "",
+        "requestBody": "",
+        "responseHeaders": "",
+        "responseBody": "{\"count\":3,\"next\":null,\"previous\":null,\"results\":[{\"name\":\"bulbasaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/1/\"},{\"name\":\"ivysaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/2/\"},{\"name\":\"venusaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/3/\"}]}",
+        "delayMs": 0
+      }
+    ]
+  }
+]

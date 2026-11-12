@@ -1,0 +1,10 @@
+appId: com.irv205.pokeapi
+---
+# Requires the app to be started in MOCK mode with e2e/fixtures/pokemon_page_happy.json
+# (use e2e/run.sh or launch via adb with --es api_environment mock --es mock_config_json).
+- extendedWaitUntil:
+    visible: "Pokédex"
+    timeout: 30000
+- assertVisible: "Bulbasaur"
+- assertVisible: "Ivysaur"
+- assertVisible: "3 Pokémon cargados"

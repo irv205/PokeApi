@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pokemon_page",
+    "name": "Lista de Pokemon",
+    "method": "GET",
+    "pathPattern": "/api/v2/pokemon",
+    "enabled": true,
+    "selectedScenarioId": "custom_400",
+    "scenarios": [
+      {
+        "id": "custom_400",
+        "name": "Error 400 custom",
+        "statusCode": 400,
+        "contentType": "application/json",
+        "requestQuery": "",
+        "requestBody": "",
+        "responseHeaders": "",
+        "responseBody": "{\"detail\":\"Parametro limit invalido\"}",
+        "delayMs": 0
+      }
+    ]
+  }
+]

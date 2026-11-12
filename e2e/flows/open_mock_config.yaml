@@ -1,0 +1,15 @@
+appId: com.irv205.pokeapi
+---
+# Smoke test: debug mock configuration screen is reachable.
+# Requires the app to be started in MOCK mode (any fixture).
+- extendedWaitUntil:
+    visible: "Pokédex"
+    timeout: 30000
+- tapOn: "Configurar mocks"
+- extendedWaitUntil:
+    visible: "Mocks de red"
+    timeout: 10000
+- assertVisible: "Configuración"
+- assertVisible: "Portabilidad"
+- assertVisible: "Importar JSON"
+- assertVisible: "Exportar JSON"
