@@ -10,9 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.irv205.pokeapi.BuildConfig
 import com.irv205.pokeapi.presentation.detail.DetailScreen
 import com.irv205.pokeapi.presentation.evolution.EvolutionScreen
 import com.irv205.pokeapi.presentation.favorites.FavoritesScreen
+import com.irv205.pokeapi.presentation.mock.MockConfigScreen
+import com.irv205.pokeapi.presentation.mock.MockServiceDetailScreen
 import com.irv205.pokeapi.presentation.pokedex.PokedexScreen
 import com.irv205.pokeapi.presentation.quiz.QuizScreen
 
@@ -20,6 +23,9 @@ import com.irv205.pokeapi.presentation.quiz.QuizScreen
 fun PokeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    refreshToken: Int = 0,
+    onOpenMockConfig: (() -> Unit)? = null,
+    onMockConfigApplied: () -> Unit = {},
 ) {
     NavHost(
         navController = navController,
@@ -45,6 +51,8 @@ fun PokeNavHost(
                 onPokemonClick = { pokemonId ->
                     navController.navigate(DetailRoute(pokemonId))
                 },
+                onOpenMockConfig = onOpenMockConfig,
+                refreshToken = refreshToken,
             )
         }
         composable<FavoritesRoute> {
@@ -79,6 +87,22 @@ fun PokeNavHost(
                     }
                 },
             )
+        }
+        if (BuildConfig.DEBUG) {
+            composable<MockConfigRoute> {
+                MockConfigScreen(
+                    onBack = { navController.popBackStack() },
+                    onApplied = onMockConfigApplied,
+                    onOpenService = { serviceId ->
+                        navController.navigate(MockServiceDetailRoute(serviceId))
+                    },
+                )
+            }
+            composable<MockServiceDetailRoute> {
+                MockServiceDetailScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
     }
 }

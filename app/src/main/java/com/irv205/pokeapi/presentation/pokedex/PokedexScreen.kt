@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,9 +55,15 @@ import com.irv205.pokeapi.presentation.components.PokemonImage
 @Composable
 fun PokedexScreen(
     onPokemonClick: (Int) -> Unit,
+    onOpenMockConfig: (() -> Unit)? = null,
+    refreshToken: Int = 0,
     viewModel: PokedexViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(refreshToken) {
+        if (refreshToken > 0) viewModel.refresh()
+    }
 
     PokedexContent(
         state = state,
@@ -65,6 +73,7 @@ fun PokedexScreen(
         onLoadMore = viewModel::loadNextPage,
         onPokemonClick = onPokemonClick,
         onFavoriteClick = viewModel::onFavoriteClick,
+        onOpenMockConfig = onOpenMockConfig,
     )
 }
 
@@ -78,9 +87,13 @@ fun PokedexContent(
     onPokemonClick: (Int) -> Unit,
     onFavoriteClick: (PokemonSummary) -> Unit,
     modifier: Modifier = Modifier,
+    onOpenMockConfig: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        PokedexHeader(pokemonCount = state.pokemon.size)
+        PokedexHeader(
+            pokemonCount = state.pokemon.size,
+            onOpenMockConfig = onOpenMockConfig,
+        )
 
         OutlinedTextField(
             value = state.query,
@@ -160,7 +173,10 @@ fun PokedexContent(
 }
 
 @Composable
-private fun PokedexHeader(pokemonCount: Int) {
+private fun PokedexHeader(
+    pokemonCount: Int,
+    onOpenMockConfig: (() -> Unit)?,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,6 +198,18 @@ private fun PokedexHeader(pokemonCount: Int) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+        if (onOpenMockConfig != null) {
+            IconButton(
+                onClick = onOpenMockConfig,
+                modifier = Modifier.testTag("open_mock_config"),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = "Configurar mocks",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         Surface(
             shape = RoundedCornerShape(50),

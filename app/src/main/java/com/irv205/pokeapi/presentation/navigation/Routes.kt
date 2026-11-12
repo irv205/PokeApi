@@ -12,6 +12,12 @@ data object FavoritesRoute
 data object QuizRoute
 
 @Serializable
+data object MockConfigRoute
+
+@Serializable
+data class MockServiceDetailRoute(val serviceId: String)
+
+@Serializable
 data class DetailRoute(val pokemonId: Int)
 
 @Serializable
