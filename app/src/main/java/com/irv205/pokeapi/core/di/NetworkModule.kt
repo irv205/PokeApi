@@ -1,5 +1,9 @@
 package com.irv205.pokeapi.core.di
 
+import com.irv205.pokeapi.BuildConfig
+import com.irv205.pokeapi.data.mock.MockInterceptor
+import com.irv205.pokeapi.data.networklog.NetworkCallRecorder
+import com.irv205.pokeapi.data.networklog.NetworkLoggingInterceptor
 import com.irv205.pokeapi.data.remote.PokeApiService
 import dagger.Module
 import dagger.Provides
@@ -30,12 +34,34 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideNetworkCallRecorder(): NetworkCallRecorder = NetworkCallRecorder()
+
+    @Provides
+    @Singleton
+    fun provideNetworkLoggingInterceptor(
+        recorder: NetworkCallRecorder,
+    ): NetworkLoggingInterceptor = NetworkLoggingInterceptor(recorder)
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        mockInterceptor: MockInterceptor,
+        networkLoggingInterceptor: NetworkLoggingInterceptor,
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BASIC
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
         return OkHttpClient.Builder()
+            // El registro va primero para capturar la respuesta final, ya sea real o mockeada.
+            .apply {
+                if (BuildConfig.DEBUG) addInterceptor(networkLoggingInterceptor)
+            }
             .addInterceptor(logging)
+            .addInterceptor(mockInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .build()
