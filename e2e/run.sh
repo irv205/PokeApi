@@ -70,7 +70,14 @@ run_flow() {
   local flow="$2"
   launch_with_fixture "$fixture"
   echo "==> Running flow: $flow"
-  "$MAESTRO" test "$flow"
+
+  local maestro_args=()
+  if [[ -n "${E2E_HTML_DIR:-}" ]]; then
+    mkdir -p "$E2E_HTML_DIR"
+    maestro_args+=(--format html --output "$E2E_HTML_DIR/$(basename "$flow" .yaml).html")
+  fi
+
+  "$MAESTRO" test "${maestro_args[@]}" "$flow"
 }
 
 case "$TARGET" in
